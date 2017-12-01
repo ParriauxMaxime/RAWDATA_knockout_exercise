@@ -17,8 +17,24 @@ define(['jquery', 'lib/knockout'], function ($, ko) {
         next: ko.observable(null),
         page: ko.observable(0),
         pageSize: ko.observable(10),
+        postFetched: ko.observable(null),
+        answersFetched: ko.observableArray([]),
     }
 
+    const fetchAnswer = (link) => {
+        return fetch(link)
+        .then(response => response.json())
+        .then(response => {Posts.answersFetched(response)})
+        .catch(err => console.error(err))
+    }
+
+    const fetchPost = (link) => {
+        return fetch(link)
+        .then(response => response.json())
+        .then(response => {Posts.postFetched(response); return response})
+        .then(response => Posts.answersFetched(fetchAnswer(response.answers)))
+        .catch(err => console.error(err))
+    };
     const Actions = {
         clickPrev: () => {
             const prev = Posts.prev();
@@ -29,7 +45,11 @@ define(['jquery', 'lib/knockout'], function ($, ko) {
             const next = Posts.next();
             const page = next.replace(/.*page=([0-9]+).*/, "$1");
             getPosts(page)
-        }
+        },
+        clickPost: (link) => {
+            fetchPost(link)
+            return false
+        },
     }
 
     $("#PageSize").on('change', (e) => {

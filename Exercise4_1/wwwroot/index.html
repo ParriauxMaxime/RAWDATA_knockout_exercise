@@ -8,18 +8,20 @@
         crossorigin="anonymous">
     <link rel="stylesheet" href="./styles.css">
     <script data-main="scripts/main" src="scripts/require.js"></script>
-    </head>
+</head>
 
 <body class="flex full">
     <header class="flex fw">
         <h1>Knockout exercise !</h1>
     </header>
     <main class="flex">
-
+        <div class="container">
             <div data-bind="template: { name: 'navigation-template' }"></div>
             <div data-bind="template: { name: 'posts-template' }"></div>
-             
-
+        </div>
+        <div class="container">
+            <div data-bind="template: { name: 'post-template' }"></div>
+        </div>
     </main>
     <footer class="flex fw">
         <p>Footer</p>
@@ -62,10 +64,50 @@
     <section id="PostList">
         <ul data-bind="foreach: posts">
             <li>
-                <a data-bind="text: title, attr: { href: link, title: title }"></a>
+                <a data-bind="text: title, attr: { href: link, title: title }, click: () => $parent.clickPost(link)"></a>
                 <br/>
             </li>
         </ul>
+    </section>
+</script>
+
+<script type="text/html" id="answers-template">
+    <section id="Answer">
+        <h4>Answers</h4>
+        <div data-bind="if: answersFetched() !== []">
+            <ul data-bind="foreach: answersFetched()">
+                <li class="AnswerDetail">
+                    <hr/>
+                    <code data-bind="text: creationDate"></code>
+                    <br/>
+                    <section data-bind="html: body"></section>
+                    <br/>
+                    <section data-bind="text: 'Score : ' + score">
+                    </section>
+                    <a data-bind="text: 'Link', attr: {href: link}">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+</script>
+
+<script type="text/html" id="post-template">
+    <section id="PostDetail">
+        <div data-bind="if: postFetched() !== null">
+            <h3 data-bind="text: postFetched().title"></h3>
+            <br/>
+            <code data-bind="text: postFetched().creationDate"></code>
+            <br/>
+            <code data-bind="html: postFetched().body"></code>
+            <br/>
+            <section data-bind="text: 'Score : ' + postFetched().score">
+            </section>
+            <a data-bind="text: 'Link', attr: {href: postFetched().link}">
+            </a>
+            <div data-bind="template: { name: 'answers-template' }"></div>
+            <br/>
+        </div>
     </section>
 </script>
 
